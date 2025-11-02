@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>太陽よりも眩しい笑顔しているのは誰〜？</title>
+<style>
+body {
+  font-family: "Arial", sans-serif;
+  background: #111;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* タイトルとサブタイトル */
+h1 {
+  font-size: 1.8em;
+  color: orange;
+  margin: 5px 0 20px 0;
+  line-height: 1.4;
+}
+
+#subTitle {
+  font-size: 0.9em;
+  margin-bottom: 50px;
+  color: #ccc;
+}
+
+/* カウンター */
+#counter {
+  font-size: 0.8em;
+  margin-bottom: 5px;
+}
+
+/* 結果（フレーズ）部分 */
+#result {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  line-height: 1.4;
+  min-height: 100px;
+  margin-top: 0;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* フレーズのアニメーション */
+.phrase-main {
+  display: block;
+  font-size: 2.5em;
+  font-weight: bold;
+  opacity: 0;
+  transform: scale(0.7);
+  animation: popMain 0.8s ease forwards;
+}
+@keyframes popMain {
+  0% { opacity: 0; transform: scale(0.7); }
+  60% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.phrase-sub {
+  display: inline-block;
+  font-size: 0.9em;
+  color: rgba(255,255,255,0.6);
+  margin-top: 10px;
+  opacity: 0;
+  white-space: pre;
+  animation: none;
+}
+
+
+/* グループ情報 */
+#group-info {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 0.85em;
+  line-height: 1.4;
+  position: relative;
+  z-index: 2;
+}
+
+#group-info b {
+  font-weight: bold;
+  font-size: 2em;
+}
+
+#member-list {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+#member-list span {
+  display: block;
+  margin: 2px 0;
+  font-weight: bold;
+}
+
+#official-links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  font-size: 0.85em;
+}
+#official-links a {
+  color: #ff66b2;
+  text-decoration: none;
+}
+#official-links a:hover {
+  text-decoration: underline;
+}
+
+/* ボタン */
+button {
+  background-color: #ff66b2;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button:hover { background-color: #ff3385; }
+
+.share-btn {
+  background-color: #1DA1F2;
+  margin-top: 10px;
+}
+.share-btn:hover { background-color: #0d8de1; }
+</style>
+</head>
+<body>
+
+<h1>太陽よりも眩しい笑顔しているのは誰〜？</h1>
+<div id="subTitle">※非公式</div>
+
+<div id="counter">
+  今日遊んだ水やり当番の人数: <span id="todayCount">0</span><br>
+  累計水やり当番の人数: <span id="totalCount">0</span>
+</div>
+
+<div id="result"></div>
+<button onclick="generatePhrase()">だ〜れ？</button>
+<button class="share-btn" onclick="shareOnX()">Xで共有</button>
+
+<div id="group-info">
+  <p><b>Flower＊Hour</b></p>
+
+  <div id="member-list">
+    <span style="color:skyblue;">夏月茉凜</span>
+    <span style="color:plum;">夢原すみれ</span>
+    <span style="color:orange;">湾咲朝陽</span>
+    <span style="color:purple;">紫恋ゆら</span>
+    <span style="color:#FFD700;">神原くりこ</span>
+    <span style="color:yellowgreen;">笹井ふぶき</span>
+    <span style="color:pink;">諸星歩奏</span>
+    <span style="color:#0077CC;">仲冨ゆめな</span>
+    <span style="color:red;">猫橋まお</span>
+    <span style="color:green;">田中みどり</span>
+  </div>
+
+  <p>2024.4.20結成<br>
+     自然派セルフプロデュースアイドル<br>
+     安心、ときどき夢<br>
+     「WAGAHAIたちはアイドルである」プロジェクト</p>
+
+  <div id="official-links">
+    <a href="https://flowerhour0420.bitfan.id" target="_blank">公式サイト</a>
+    <a href="https://twitter.com/flowerhour0420" target="_blank">公式X</a>
+    <a href="https://www.tiktok.com/@flowerhour0420" target="_blank">公式TikTok</a>
+    <a href="https://lit.link/flowerhour0420" target="_blank">リンク</a>
+  </div>
+</div>
+
+<script>
+const phrases = [
+  {main:"あさひ！", color:"orange", sub:"安定〜！"},
+  {main:"みどり！", color:"green", sub:"仏"},
+  {main:"猫橋！", color:"red", sub:"どちらかと言うと天使の微笑み"},
+  {main:"すみれ！", color:"plum", sub:"太陽を溶かしちゃいそう"},
+  {main:"ふぶき！", color:"yellowgreen", sub:"フフって笑いそう"},
+  {main:"ゆめな！", color:"#0077CC", sub:"笑うと細くなるのが好き"},
+  {main:"まりんりん！", color:"skyblue", sub:"輝きすぎてる笑顔"},
+  {main:"ゆらちゃん！", color:"purple", sub:"ｷｬｰｷｬｰ言ってそう"},
+  {main:"くりこ！", color:"#FFD700", sub:"太陽より強そう"},
+  {main:"ほのか！", color:"pink", sub:"のほほんスマイル"},
+  // 白の新フレーズ
+  {main:"誰？", color:"white", sub:"ほんとに誰？"},
+  {main:"お前ー！", color:"white", sub:"私か"},
+  {main:"君だったんだ", color:"white", sub:"恋だね"},
+  {main:"あなた", color:"white", sub:"ありがとう"},
+  {main:"………誰？", color:"white", sub:"わからないね"},
+  {main:"水やり当番！", color:"white", sub:"Flower＊Hourのおかげ"},
+  {main:"私！", color:"white", sub:"そうだね"},
+  {main:"俺！俺俺！", color:"white", sub:"うるさいよ"}
+];
+
+let todayCount = 0;
+let totalCount = Number(localStorage.getItem("totalCount")) || 0;
+document.getElementById("todayCount").textContent = todayCount;
+document.getElementById("totalCount").textContent = totalCount;
+
+function generatePhrase() {
+  todayCount++;
+  totalCount++;
+  localStorage.setItem("totalCount", totalCount);
+  document.getElementById("todayCount").textContent = todayCount;
+  document.getElementById("totalCount").textContent = totalCount;
+
+  const result = document.getElementById("result");
+  result.style.marginTop = "50px";
+  result.style.marginBottom = "50px";
+  result.innerHTML = "";
+
+  const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+  const main = document.createElement("span");
+  const sub = document.createElement("span");
+  main.textContent = phrase.main;
+  sub.textContent = phrase.sub;
+  main.className = "phrase-main";
+  sub.className = "phrase-sub";
+  main.style.color = phrase.color;
+  result.appendChild(main);
+  result.appendChild(sub);
+
+  generatePetals(phrase.color);
+  animateSubText(sub);
+}
+
+function animateSubText(element) {
+  const text = element.textContent;
+  element.textContent = "";
+  element.style.opacity = "1";
+  element.style.display = "inline-block";
+  element.style.textAlign = "center";
+
+  [...text].forEach((char, i) => {
+    setTimeout(() => {
+      const span = document.createElement("span");
+      span.textContent = char;
+      span.style.display = "inline-block";
+      span.style.opacity = "0";
+      span.style.transform = "scale(0.5)";
+      element.appendChild(span);
+      setTimeout(() => {
+        span.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+        span.style.opacity = "1";
+        span.style.transform = "scale(1)";
+      }, 10);
+    }, i * 100);
+  });
+}
+
+function generatePetals(color) {
+  document.querySelectorAll(".petal").forEach(el => el.remove());
+  for(let i=0;i<20;i++){
+    const petal = document.createElement("div");
+    petal.className = "petal";
+    petal.style.left = Math.random()*window.innerWidth+"px";
+    petal.style.background = color;
+    petal.style.animationDuration = (4 + Math.random()*3)+"s";
+    petal.style.width = (8+Math.random()*6)+"px";
+    petal.style.height = petal.style.width;
+    document.body.appendChild(petal);
+  }
+}
+
+function shareOnX() {
+  const main = document.querySelector(".phrase-main")?.textContent || "";
+  const sub = document.querySelector(".phrase-sub")?.textContent || "";
+  const text = `太陽よりも眩しい笑顔しているのは誰〜？\n${main}\n（${sub}）\n#ふらあわ\n#イッツフラワーアワー`;
+  const url = encodeURIComponent(window.location.href);
+  const shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`;
+  window.open(shareURL, "_blank");
+}
+</script>
+</body>
+</html>
