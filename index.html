@@ -14,18 +14,15 @@
     body{
       margin:0;
       min-height:100vh;
-
       background:
         linear-gradient(rgba(255,255,255,.65), rgba(255,255,255,.65)),
         url("background.png");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-
       display:flex;
       justify-content:center;
       align-items:center;
-
       font-family:"M PLUS Rounded 1c",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;
     }
 
@@ -47,11 +44,10 @@
       font-size:1.6rem;
       font-weight:800;
       white-space: nowrap;
-      letter-spacing: .03em;
+      letter-spacing:.03em;
     }
 
     .ex{font-weight:900;}
-
     .c1{color:#7fdfff;}
     .c2{color:#d6c7ff;}
     .c3{color:#ffa64d;}
@@ -79,7 +75,7 @@
       border:1px solid #d6d6d6;
       box-sizing:border-box;
       outline:none;
-      transition: border .15s ease, box-shadow .15s ease;
+      transition:border .15s ease, box-shadow .15s ease;
       background:#fff;
     }
 
@@ -89,7 +85,7 @@
     }
 
     .hint{
-      font-size:0.85rem;
+      font-size:.85rem;
       color:#666;
       margin-top:6px;
       text-align:left;
@@ -102,18 +98,15 @@
       font-size:1.2rem;
       border-radius:999px;
       border:none;
-
       background:linear-gradient(180deg,#9af0c0 0%, #5fd39c 100%);
       color:#fff;
       font-weight:800;
       letter-spacing:.05em;
-
       cursor:pointer;
       box-shadow:
         0 10px 20px rgba(95,211,156,.35),
         inset 0 1px 0 rgba(255,255,255,.6);
-
-      transition: transform .08s ease, box-shadow .12s ease, filter .12s ease;
+      transition:transform .08s ease, box-shadow .12s ease, filter .12s ease;
     }
 
     button:hover{
@@ -131,9 +124,10 @@
     }
 
     .note{
-      margin-top:16px;
-      font-size:0.8rem;
+      margin-top:14px;
+      font-size:.75rem;
       color:#888;
+      line-height:1.4;
     }
   </style>
 </head>
@@ -151,14 +145,20 @@
     <div class="hint">空欄だと進めないよ</div>
 
     <button id="startBtn">次はあーなーた！</button>
-    <div class="note">※非公式</div>
+
+    <!-- 注意書き（追加） -->
+    <div class="note">
+      ※入力した内容は保存されません。<br>
+      このページの中だけで使われます。<br>
+      ※非公式
+    </div>
   </div>
 
   <script>
     const nameInput = document.getElementById("nameInput");
     const startBtn = document.getElementById("startBtn");
 
-    // ✅ 戻ってきた時：nameを復元
+    // 戻ってきた時：nameを復元
     const params = new URLSearchParams(location.search);
     const restoredName = params.get("name");
     if (restoredName) {
@@ -172,8 +172,6 @@
         nameInput.focus();
         return;
       }
-
-      // ✅ 1ページ目→2ページ目に進む時、既存の入力も持ったまま
       params.set("name", name);
       location.href = "info.html?" + params.toString();
     });
