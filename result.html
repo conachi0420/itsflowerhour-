@@ -9,9 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
 
-  <!-- 画像化ライブラリ（カードをPNGにする） -->
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
   <style>
     :root{ --accent:#ff7eb9; }
 
@@ -140,9 +137,11 @@
       font-size:.95rem;
       font-weight:700;
       cursor:pointer;
+
       box-shadow:
         0 6px 14px rgba(0,0,0,.08),
         inset 0 1px 0 rgba(255,255,255,.6);
+
       transition:
         background .15s ease,
         color .15s ease,
@@ -164,12 +163,6 @@
         0 4px 10px rgba(0,0,0,.1),
         inset 0 2px 4px rgba(0,0,0,.12);
     }
-
-    .uiBtn:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-      transform:none;
-    }
   </style>
 </head>
 
@@ -186,7 +179,6 @@
 
     <div class="btnRow">
       <button class="uiBtn" id="backBtn">入力を直す</button>
-      <button class="uiBtn" id="saveBtn" disabled>画像を保存</button>
       <button class="uiBtn" id="shareBtn">Xで共有</button>
     </div>
   </div>
@@ -227,10 +219,12 @@
       { text:"みんなを連れていくぞー！", color:TEN_COLORS.leaf }
     ];
 
+    // 特技
     const skills = skillRaw.split(/[、,\/]/).map(v => v.trim()).filter(Boolean);
     const mainSkill = skills[0];
     const subSkill  = skills[1] || "";
 
+    // 補助語フル（削らない）
     const helpers = [
       "にこにこで","ふわっと","きゅるっと","ほんわか","てれてれ","ぽわっと",
       "全力で","勢いで","ノリよく","元気に","テンション高めで","アクセル全開で",
@@ -244,6 +238,7 @@
     ];
     const sup = pick(helpers);
 
+    // 2〜5行目：ランダム
     const line2 = `${pick([
       `${name}の登場！`,
       `${name}におまかせ♡`,
@@ -257,7 +252,7 @@
     const line3 = pick([
       `${mainSkill} ${sup}キメちゃう！`,
       `${mainSkill} ${sup}任せて！`,
-      `メンバー1の ${mainSkill}！`
+      `メンバー1の${mainSkill}！`
     ]);
 
     const line4 = pick([
@@ -281,11 +276,11 @@
     let line6, accent;
     if (kime && kime.trim()) {
       line6 = kime.trim();
-      accent = pick(Object.values(TEN_COLORS));
+      accent = pick(Object.values(TEN_COLORS)); // 入力時は色ランダム
     } else {
       const chosen = pick(FIXED_LAST);
       line6 = chosen.text;
-      accent = chosen.color;
+      accent = chosen.color; // ランダム時は文ごと固定色
     }
     document.documentElement.style.setProperty("--accent", accent);
 
@@ -296,48 +291,38 @@
 
     const els = [l1,l2,l3,l4,l5,l6];
     const card = document.getElementById("card");
-    const saveBtn = document.getElementById("saveBtn");
     const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-    async function reveal(el, text, mode="normal"){
+    async function reveal(el, text, slow=false){
       const m = text.match(/^(.*?)(（.*?）)$/);
-      const main = m ? m[1] : text;
-      const call = m ? m[2] : "";
-
-      el.textContent = main;
+      el.textContent = m ? m[1] : text;
 
       el.classList.remove("reveal","reveal-slow");
-      void el.offsetWidth;
-      el.classList.add(mode === "slow" ? "reveal-slow" : "reveal");
+      void el.offsetWidth; // 再発火
+      el.classList.add(slow ? "reveal-slow" : "reveal");
 
-      await sleep(mode === "slow" ? 2000 : 1400);
+      await sleep(slow ? 2000 : 1400);
 
-      if (call){
+      if (m){
         card.classList.add("flash");
         const span = document.createElement("span");
         span.className = "call";
-        span.textContent = call;
+        span.textContent = m[2];
         el.appendChild(span);
         setTimeout(()=>card.classList.remove("flash"), 320);
       }
     }
 
-    // 表示完了したら「画像を保存」解禁
-    let finished = false;
-
     (async ()=>{
       for(let i=0;i<lines.length;i++){
-        await reveal(els[i], lines[i], i===4 ? "slow" : "normal");
-
+        await reveal(els[i], lines[i], i===4);  // 5行目前で遅く
         if(i === 4){
-          await sleep(1400);
-          card.classList.add("final");
+          await sleep(1400);          // 最後前のタメ
+          card.classList.add("final"); // 最後の背景
         } else {
-          await sleep(i === 5 ? 600 : 700);
+          await sleep(700);
         }
       }
-      finished = true;
-      saveBtn.disabled = false;
     })();
 
     // 入力に戻る（値保持）
@@ -345,40 +330,19 @@
       location.href = "info.html" + location.search;
     };
 
-    // Xで共有（今は全文＋タグ。URLだけにしたいならここを変更）
+    // X共有：全文 + #タグ + URL（末尾）
     document.getElementById("shareBtn").onclick = () => {
-      const text = lines.join("\n") + "\n\n#イッツ水やり当番";
+      const siteUrl = "https://conachi0420.github.io/itsflowerhour-/";
+      const text =
+        lines.join("\n") +
+        "\n\n#イッツ水やり当番\n" +
+        siteUrl;
+
       window.open(
         "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text),
         "_blank",
         "noopener,noreferrer"
       );
-    };
-
-    // 画像を保存（カードだけをPNG化）
-    saveBtn.onclick = async () => {
-      if (!finished) return;
-
-      saveBtn.disabled = true;
-      saveBtn.textContent = "作成中…";
-
-      try{
-        const canvas = await html2canvas(card, {
-          backgroundColor: null,
-          scale: 2
-        });
-
-        const dataUrl = canvas.toDataURL("image/png");
-        const a = document.createElement("a");
-        a.href = dataUrl;
-        a.download = `its_mizuyari_${name}.png`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      } finally {
-        saveBtn.textContent = "画像を保存";
-        saveBtn.disabled = false;
-      }
     };
   </script>
 </body>
