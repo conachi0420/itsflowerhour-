@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>入力</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        linear-gradient(rgba(255,255,255,.65), rgba(255,255,255,.65)),
+        url("background.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-family:"M PLUS Rounded 1c",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;
+    }
+
+    .card{
+      width:92%;
+      max-width:520px;
+      background:rgba(255,255,255,.93);
+      border-radius:24px;
+      padding:28px 22px 26px;
+      box-shadow:
+        0 14px 30px rgba(0,0,0,.12),
+        inset 0 1px 0 rgba(255,255,255,.6);
+      backdrop-filter: blur(6px);
+    }
+
+    h2{
+      text-align:center;
+      font-size:1.35rem;
+      margin:0 0 18px;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+
+    .field{margin-bottom:14px;}
+
+    label{
+      display:block;
+      margin-bottom:6px;
+      font-size:1rem;
+      font-weight:700;
+    }
+
+    input{
+      width:100%;
+      padding:13px 14px;
+      font-size:1.05rem;
+      border-radius:14px;
+      border:1px solid #d6d6d6;
+      box-sizing:border-box;
+      outline:none;
+      transition: border .15s ease, box-shadow .15s ease;
+      background:#fff;
+    }
+
+    input:focus{
+      border-color:#7fe3a4;
+      box-shadow:0 0 0 3px rgba(127,227,164,.25);
+    }
+
+    .hint{
+      font-size:.85rem;
+      color:#666;
+      margin-top:6px;
+    }
+
+    button{
+      width:100%;
+      margin-top:18px;
+      padding:16px 0;
+      font-size:1.2rem;
+      border-radius:999px;
+      border:none;
+      background:linear-gradient(180deg,#9af0c0 0%, #5fd39c 100%);
+      color:#fff;
+      font-weight:800;
+      letter-spacing:.05em;
+      cursor:pointer;
+      box-shadow:
+        0 10px 20px rgba(95,211,156,.35),
+        inset 0 1px 0 rgba(255,255,255,.6);
+      transition: transform .08s ease, box-shadow .12s ease, filter .12s ease;
+    }
+
+    button:hover{
+      filter:brightness(1.05);
+      box-shadow:
+        0 12px 24px rgba(95,211,156,.45),
+        inset 0 1px 0 rgba(255,255,255,.7);
+    }
+
+    button:active{
+      transform: translateY(2px) scale(.97);
+      box-shadow:
+        0 6px 12px rgba(95,211,156,.35),
+        inset 0 2px 4px rgba(0,0,0,.15);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h2 id="title"></h2>
+
+    <div class="field">
+      <label for="catchInput">あなたはどんな人？</label>
+      <input id="catchInput" placeholder="例：元気 / クール / ラブリー" />
+      <div class="hint">例みたいに、短くでOK</div>
+    </div>
+
+    <div class="field">
+      <label for="skillInput">これが得意！※２個まで</label>
+      <input id="skillInput" placeholder="例：ダンス、英語" />
+      <div class="hint">単語で書いてね！区切りは「、」「,」「/」OK</div>
+    </div>
+
+    <div class="field">
+      <label for="pushInput">ここがチャームポイント！※１個まで</label>
+      <input id="pushInput" placeholder="例：えくぼ / 声 / 雰囲気" />
+    </div>
+
+    <div class="field">
+      <label for="likeInput">好きなものは？※１個まで</label>
+      <input id="likeInput" placeholder="例：お寿司 / 音楽 / ねこ" />
+    </div>
+
+    <div class="field">
+      <label for="fromInput">どこ生まれ？</label>
+      <input id="fromInput" placeholder="例：岐阜 / 大阪 / お花畑" />
+      <div class="hint">（書かなくてもOK）</div>
+    </div>
+
+    <div class="field">
+      <label for="kimeInput">最後の決めゼリフ</label>
+      <input id="kimeInput" placeholder="例：見逃すなよっ！" />
+      <div class="hint">（書かなくてもOK）</div>
+    </div>
+
+    <button id="nextBtn">次は〇ー〇ー〇！</button>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const name = params.get("name");
+
+    if (!name) {
+      alert("最初のページから名前を入力してください");
+      location.href = "index.html";
+      throw new Error("missing name");
+    }
+
+    // 要素
+    const titleEl = document.getElementById("title");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const catchEl = document.getElementById("catchInput");
+    const skillEl = document.getElementById("skillInput");
+    const pushEl  = document.getElementById("pushInput");
+    const likeEl  = document.getElementById("likeInput");
+    const fromEl  = document.getElementById("fromInput");
+    const kimeEl  = document.getElementById("kimeInput");
+
+    // タイトル & ボタン文言
+    titleEl.textContent = name + "の入力";
+    nextBtn.textContent = "次は" + name.split("").join("ー") + "！";
+
+    // ✅ 戻ってきた時の復元（URLから入れる）
+    catchEl.value = params.get("catch") || "";
+    skillEl.value = params.get("skill") || "";
+    pushEl.value  = params.get("push")  || "";
+    likeEl.value  = params.get("like")  || "";
+    fromEl.value  = params.get("from")  || "";
+    kimeEl.value  = params.get("kime")  || "";
+
+    nextBtn.addEventListener("click", () => {
+      const catchCopy = catchEl.value.trim();
+      const skillRaw  = skillEl.value.trim();
+
+      if (!catchCopy || !skillRaw) {
+        alert("「あなたはどんな人？」と「これが得意！」は必須だよ");
+        return;
+      }
+
+      // 2個までチェック
+      const skills = skillRaw.split(/[、,\/]/).map(v => v.trim()).filter(Boolean);
+      if (skills.length > 2) {
+        alert("得意は2個まででお願い！");
+        return;
+      }
+
+      const q =
+        `?name=${encodeURIComponent(name)}` +
+        `&catch=${encodeURIComponent(catchCopy)}` +
+        `&skill=${encodeURIComponent(skillRaw)}` +
+        `&push=${encodeURIComponent(pushEl.value.trim())}` +
+        `&like=${encodeURIComponent(likeEl.value.trim())}` +
+        `&from=${encodeURIComponent(fromEl.value.trim())}` +
+        `&kime=${encodeURIComponent(kimeEl.value.trim())}`;
+
+      location.href = "result.html" + q;
+    });
+  </script>
+</body>
+</html>
