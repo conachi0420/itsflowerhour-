@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>結果</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{ --accent:#ff7eb9; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,.55)),
+        url("background.png");
+      background-size: cover;
+      background-position: center;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-family:"M PLUS Rounded 1c",sans-serif;
+    }
+
+    .wrap{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
+      padding:18px 0;
+    }
+
+    .card{
+      width:92%;
+      max-width:540px;
+      background:rgba(255,255,255,.94);
+      border-radius:26px;
+      padding:34px 24px 32px;
+      box-shadow:
+        0 18px 36px rgba(0,0,0,.15),
+        inset 0 1px 0 rgba(255,255,255,.7);
+      backdrop-filter: blur(6px);
+      transition: box-shadow .25s ease, background .35s ease;
+    }
+
+    .card.flash{
+      box-shadow:
+        0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent),
+        0 0 30px color-mix(in srgb, var(--accent) 55%, transparent),
+        inset 0 1px 0 rgba(255,255,255,.8);
+    }
+
+    .card.final{
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--accent) 18%, rgba(255,255,255,.94)),
+          rgba(255,255,255,.94)
+        );
+      box-shadow:
+        0 0 0 5px color-mix(in srgb, var(--accent) 35%, transparent),
+        0 0 36px color-mix(in srgb, var(--accent) 45%, transparent),
+        inset 0 1px 0 rgba(255,255,255,.8);
+    }
+
+    .line{
+      margin-top:16px;
+      font-size:1.18rem;
+      font-weight:700;
+      text-align:center;
+      letter-spacing:.1em;
+      min-height:1.8em;
+      opacity:0;
+      clip-path: inset(0 100% 0 0);
+    }
+    .line:first-child{margin-top:0;}
+
+    .line.reveal{ opacity:1; animation: wipe 1300ms ease forwards; }
+    .line.reveal-slow{ opacity:1; animation: wipe 1900ms ease forwards; }
+
+    @keyframes wipe{
+      from{ clip-path: inset(0 100% 0 0); }
+      to  { clip-path: inset(0 0 0 0); }
+    }
+
+    .call{
+      display:inline-block;
+      margin-left:.3em;
+      font-weight:900;
+      color: var(--accent);
+      transform: scale(.6);
+      opacity:0;
+      text-shadow:
+        0 0 6px color-mix(in srgb, var(--accent) 60%, transparent),
+        0 0 14px color-mix(in srgb, var(--accent) 40%, transparent);
+      animation: pop 220ms ease-out forwards;
+    }
+    @keyframes pop{
+      to{ transform: scale(1.25); opacity:1; }
+    }
+
+    .last{
+      margin-top:22px;
+      font-size:1.32rem;
+      font-weight:800;
+      color: var(--accent);
+      text-shadow:
+        0 0 6px color-mix(in srgb, var(--accent) 60%, transparent),
+        0 0 16px color-mix(in srgb, var(--accent) 40%, transparent);
+      animation: sparkle 2.2s infinite alternate;
+    }
+    @keyframes sparkle{
+      to{filter:brightness(1.35);}
+    }
+
+    /* ▼ 枠外ボタン（ニュートラル・グレー） */
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      width:92%;
+      max-width:540px;
+    }
+
+    .backBtn,
+    .shareBtn{
+      padding:12px 22px;
+      border-radius:999px;
+      border:1.5px solid #cfcfcf;
+      background:rgba(255,255,255,.85);
+      color:#666;
+      font-size:.95rem;
+      font-weight:700;
+      cursor:pointer;
+
+      box-shadow:
+        0 6px 14px rgba(0,0,0,.08),
+        inset 0 1px 0 rgba(255,255,255,.6);
+
+      transition:
+        background .15s ease,
+        color .15s ease,
+        box-shadow .15s ease,
+        transform .08s ease;
+    }
+
+    .backBtn:hover,
+    .shareBtn:hover{
+      background:#f3f3f3;
+      color:#333;
+      box-shadow:
+        0 8px 18px rgba(0,0,0,.12),
+        inset 0 1px 0 rgba(255,255,255,.7);
+    }
+
+    .backBtn:active,
+    .shareBtn:active{
+      transform: scale(.96);
+      box-shadow:
+        0 4px 10px rgba(0,0,0,.1),
+        inset 0 2px 4px rgba(0,0,0,.12);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card" id="card">
+      <div class="line" id="l1"></div>
+      <div class="line" id="l2"></div>
+      <div class="line" id="l3"></div>
+      <div class="line" id="l4"></div>
+      <div class="line" id="l5"></div>
+      <div class="line last" id="l6"></div>
+    </div>
+
+    <div class="btnRow">
+      <button class="backBtn" id="backBtn">入力を直す</button>
+      <button class="shareBtn" id="shareBtn">Xで共有</button>
+    </div>
+  </div>
+
+  <script>
+    const p = new URLSearchParams(location.search);
+    const name = p.get("name") || "";
+    const catchCopy = p.get("catch") || "";
+    const skillRaw = p.get("skill") || "";
+    const push = p.get("push") || "";
+    const like = p.get("like") || "";
+    const from = p.get("from") || "";
+    const kime = p.get("kime") || "";
+
+    const pick = a => a[Math.floor(Math.random()*a.length)];
+
+    const TEN_COLORS={
+      water:"#7fdfff", lavender:"#d6c7ff", orange:"#ffa64d", purple:"#6a1b9a",
+      yellow:"#ffd93d", green:"#9be564", pink:"#ff7eb9", blue:"#4dabf7",
+      red:"#ff4d4f", leaf:"#4caf50"
+    };
+
+    const FIXED_LAST=[
+      {t:"どっちなのー！",c:TEN_COLORS.water},
+      {t:"見逃すなよっ！",c:TEN_COLORS.lavender},
+      {t:"からのサビ行くよ！",c:TEN_COLORS.orange},
+      {t:`${name}からよそ見しないでね？`,c:TEN_COLORS.purple},
+      {t:"今晩何食べたい？",c:TEN_COLORS.yellow},
+      {t:"気になるでしょ？",c:TEN_COLORS.green},
+      {t:`${name}の沼へめんそーれ`,c:TEN_COLORS.pink},
+      {t:`${name}頑張ります！`,c:TEN_COLORS.blue},
+      {t:"端から端まで愛してにゃ",c:TEN_COLORS.red},
+      {t:"みんなを連れていくぞー！",c:TEN_COLORS.leaf}
+    ];
+
+    const skills=skillRaw.split(/[、,\/]/).map(v=>v.trim()).filter(Boolean);
+    const mainSkill=skills[0];
+    const subSkill=skills[1]||"";
+
+    const helpers=[
+      "にこにこで","ふわっと","きゅるっと","ほんわか","てれてれ","ぽわっと",
+      "全力で","勢いで","ノリよく","元気に","テンション高めで","アクセル全開で",
+      "さらっと","涼しい顔で","クールに","無表情で","淡々と",
+      "スマートに","理論派で","ロジカルに","頭脳派で","計画的に",
+      "マイペースに","ゆるっと","自然体で","脱力気味に","のんびり",
+      "急に","なぜか","謎テンションで","思ったより","気づいたら",
+      "いつの間にか","クセ強めで","静かに見えて","だいぶ","予想外に",
+      "しれっと","堂々と","雰囲気で","勢い任せで","よく分からんけど",
+      "余裕で","本気で"
+    ];
+    const sup=pick(helpers);
+
+    const line2=`${pick([
+      `${name}の登場！`,
+      `${name}におまかせ♡`,
+      `${name}から目を離しちゃダメ！`,
+      `よくくうこ${name}ちゃんやお！`,
+      `${name}ワールドにご招待`,
+      `みんな${name}ちゃんのトリコ`,
+      `${name}のことが大好き`
+    ])}（${name}！）`;
+
+    const line3=pick([
+      `${mainSkill} ${sup}キメちゃう！`,
+      `${mainSkill} ${sup}任せて！`,
+      `メンバー1の${mainSkill}！`
+    ]);
+
+    const line4=pick([
+      `毎日${catchCopy}更新中〜♡`,
+      push&&`君の${push}にVISA申請`,
+      `${name}のギャップが好きでしょ？`,
+      like&&`${like}が1番だーいすき`,
+      `水やりのオールラウンダー`,
+      `あれ？これが${name}タイム…？`
+    ].filter(Boolean));
+
+    const line5=pick([
+      `君だけの${name}のかわいさ`,
+      from&&`${from}が産んだおかんな彼氏な`,
+      `${name}に染まる準備はOK？`,
+      `${name}のこと`,
+      subSkill&&`${subSkill}も${sup}パスしてTake off`
+    ].filter(Boolean));
+
+    let line6,accent;
+    if(kime){
+      line6=kime;
+      accent=pick(Object.values(TEN_COLORS));
+    }else{
+      const o=pick(FIXED_LAST);
+      line6=o.t;
+      accent=o.c;
+    }
+    document.documentElement.style.setProperty("--accent",accent);
+
+    const lines=[
+      `水やり当番の${catchCopy}担当`,
+      line2,line3,line4,line5,line6
+    ];
+
+    const els=[l1,l2,l3,l4,l5,l6];
+    const card=document.getElementById("card");
+    const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+    async function reveal(el,text,slow=false){
+      const m=text.match(/^(.*?)(（.*?）)$/);
+      el.textContent=m?m[1]:text;
+      el.classList.remove("reveal","reveal-slow");
+      void el.offsetWidth;
+      el.classList.add(slow?"reveal-slow":"reveal");
+      await sleep(slow?2000:1400);
+      if(m){
+        card.classList.add("flash");
+        const s=document.createElement("span");
+        s.className="call"; s.textContent=m[2];
+        el.appendChild(s);
+        setTimeout(()=>card.classList.remove("flash"),320);
+      }
+    }
+
+    (async()=>{
+      for(let i=0;i<lines.length;i++){
+        await reveal(els[i],lines[i],i===4);
+        if(i===4){await sleep(1400);card.classList.add("final");}
+        else await sleep(700);
+      }
+    })();
+
+    document.getElementById("backBtn").onclick=()=>{
+      location.href="info.html"+location.search;
+    };
+    document.getElementById("shareBtn").onclick=()=>{
+      const text=lines.join("\n")+"\n\n#イッツ水やり当番";
+      window.open("https://twitter.com/intent/tweet?text="+encodeURIComponent(text),
+                  "_blank","noopener,noreferrer");
+    };
+  </script>
+</body>
+</html>
